@@ -26,7 +26,7 @@ dependencies = [
 clikunja = "clikunja.cli:app"
 
 [project.urls]
-Homepage = "https://gitea.kumekay.com/kumekay/clikunja"
+Homepage = "https://github.com/kumekay/clikunja"
 
 [build-system]
 requires = ["hatchling"]

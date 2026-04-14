@@ -5,7 +5,7 @@ A CLI for [Vikunja](https://vikunja.io) inspired by `gh`. Configurable server UR
 ## Install
 
 ```bash
-uv tool install git+https://gitea.kumekay.com/kumekay/clikunja.git
+uv tool install git+https://github.com/kumekay/clikunja.git
 ```
 
 Or editable from a local checkout:
