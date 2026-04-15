@@ -61,7 +61,7 @@ def api_cmd(
         "-F",
         help="File-valued field for JSON body (key=@path or key=@- for stdin). Repeatable.",
     ),
-    body: str | None = typer.Option(
+    body_source: str | None = typer.Option(
         None,
         "--body",
         help="Raw JSON body from @path or - for stdin.",
@@ -82,12 +82,12 @@ def api_cmd(
     else:
         _die(f"Unknown HTTP method: {method_or_path!r}", 1)
 
-    if body is not None and (f or F):
+    if body_source is not None and (f or F):
         _die("Cannot combine --body with -f/-F.", 1)
 
     payload: Any | None = None
-    if body is not None:
-        payload = _read_json_body(body)
+    if body_source is not None:
+        payload = _read_json_body(body_source)
     elif f or F:
         payload = {}
         for item in f or []:
@@ -101,7 +101,9 @@ def api_cmd(
 
     client = Client(cfg.url, cfg.token)
     kwargs: dict = {}
-    if body is not None or (payload is not None and method in {"POST", "PUT", "PATCH", "DELETE"}):
+    if payload is not None and (
+        body_source is not None or method in {"POST", "PUT", "PATCH", "DELETE"}
+    ):
         kwargs["json"] = payload
 
     try:
