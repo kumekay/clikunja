@@ -49,6 +49,16 @@ clikunja api GET projects
 clikunja api PUT projects/3/tasks -f title="From CLI"
 ```
 
+## Agent skill
+
+This repo ships a `using-clikunja` skill at [`using-clikunja/SKILL.md`](using-clikunja/SKILL.md). Install it into an agent that consumes skills (e.g. via the [`skills`](https://github.com/vercel-labs/skills) CLI):
+
+```bash
+npx skills add git@github.com:kumekay/clikunja.git --skill using-clikunja
+```
+
+Once installed, the agent will prefer `clikunja` over `curl` / browser automation whenever a Vikunja URL or task is mentioned.
+
 ## Development
 
 ```bash
