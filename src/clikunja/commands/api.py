@@ -38,7 +38,7 @@ def _read_json_body(value: str) -> Any:
     elif value.startswith("@"):
         raw = Path(value[1:]).read_text()
     else:
-        _die(f"--body must be '-' or @path (got {value!r})", 1)
+        _die(f"--body requires either '-' (stdin) or '@path' (file), got {value!r}", 1)
 
     try:
         return json.loads(raw)
