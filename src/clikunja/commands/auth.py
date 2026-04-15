@@ -39,16 +39,30 @@ def _verify(url: str, token: str) -> dict:
 def login(
     url: str | None = typer.Option(None, "--url", help="Vikunja base URL."),
     token: str | None = typer.Option(None, "--token", help="API token."),
+    token_stdin: bool = typer.Option(
+        False,
+        "--token-stdin",
+        help="Read the API token from stdin (paste-friendly; strips surrounding whitespace).",
+    ),
     check: bool = typer.Option(
         False, "--check", help="Verify credentials but do not modify saved config."
     ),
 ) -> None:
     """Log in to a Vikunja instance with an API token."""
+    import sys
+
+    if token and token_stdin:
+        _die("--token and --token-stdin are mutually exclusive.", 1)
+
     existing = config.load()
     url = url or existing.url
     if not url:
         url = typer.prompt("Vikunja URL")
-    if not token:
+    if token_stdin:
+        token = sys.stdin.read().strip()
+        if not token:
+            _die("No token received on stdin.", 1)
+    elif not token:
         token = typer.prompt("API token", hide_input=True)
 
     user = _verify(url, token)

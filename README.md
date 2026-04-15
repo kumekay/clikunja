@@ -18,7 +18,11 @@ uv tool install --editable .
 
 ```bash
 clikunja login --url https://your-vikunja.example.com
-# paste API token (generate one in the Vikunja web UI: Settings → API Tokens)
+# paste API token at the prompt (generate one in the Vikunja web UI: Settings → API Tokens)
+
+# If your terminal blocks paste at hidden prompts, pipe the token via stdin:
+pbpaste | clikunja login --url https://your-vikunja.example.com --token-stdin
+# or: clikunja login --url ... --token-stdin <<< "$YOUR_TOKEN"
 ```
 
 Config is stored at `$XDG_CONFIG_HOME/clikunja/config.yml` (mode `0600`).

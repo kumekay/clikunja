@@ -74,6 +74,35 @@ def test_auth_logout_removes_token_keeps_url():
     assert saved.token is None
 
 
+def test_login_token_stdin(httpx_mock):
+    httpx_mock.add_response(
+        url="https://todo.example.com/api/v1/user",
+        json={"id": 1, "username": "alice"},
+    )
+    result = runner.invoke(
+        app,
+        ["login", "--url", "https://todo.example.com", "--token-stdin"],
+        input="tk_from_stdin\n",
+    )
+    assert result.exit_code == 0, result.output + result.stderr
+    saved = config.load()
+    assert saved.token == "tk_from_stdin"
+
+
+def test_login_token_stdin_strips_trailing_whitespace(httpx_mock):
+    httpx_mock.add_response(
+        url="https://todo.example.com/api/v1/user",
+        json={"id": 1, "username": "alice"},
+    )
+    result = runner.invoke(
+        app,
+        ["login", "--url", "https://todo.example.com", "--token-stdin"],
+        input="  tk_padded  \n\n",
+    )
+    assert result.exit_code == 0, result.output + result.stderr
+    assert config.load().token == "tk_padded"
+
+
 def test_login_check_only_does_not_overwrite_config(httpx_mock):
     config.save(config.Config(url="https://old.example.com", token="old_tok"))
     httpx_mock.add_response(
