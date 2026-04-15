@@ -74,6 +74,20 @@ def test_auth_logout_removes_token_keeps_url():
     assert saved.token is None
 
 
+def test_login_interactive_prompt(httpx_mock):
+    httpx_mock.add_response(
+        url="https://todo.example.com/api/v1/user",
+        json={"id": 1, "username": "alice"},
+    )
+    result = runner.invoke(
+        app,
+        ["login", "--url", "https://todo.example.com"],
+        input="tk_pasted\n",
+    )
+    assert result.exit_code == 0, result.output + result.stderr
+    assert config.load().token == "tk_pasted"
+
+
 def test_login_token_stdin(httpx_mock):
     httpx_mock.add_response(
         url="https://todo.example.com/api/v1/user",

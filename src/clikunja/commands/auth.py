@@ -63,7 +63,12 @@ def login(
         if not token:
             _die("No token received on stdin.", 1)
     elif not token:
-        token = typer.prompt("API token", hide_input=True)
+        typer.echo(
+            "Paste your API token below (input is visible so paste works reliably; "
+            "use --token-stdin for scripted input).",
+            err=True,
+        )
+        token = typer.prompt("API token").strip()
 
     user = _verify(url, token)
     username = user.get("username") or user.get("name") or "user"
