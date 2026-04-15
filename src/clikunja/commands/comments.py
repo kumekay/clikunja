@@ -22,15 +22,11 @@ def list_comments(
         {
             "id": c.get("id"),
             "author": (c.get("author") or {}).get("username"),
-            "comment": (c.get("comment") or "").splitlines()[0]
-            if c.get("comment")
-            else "",
+            "comment": (c.get("comment") or "").splitlines()[0] if c.get("comment") else "",
         }
         for c in (data or [])
     ]
-    print_table(
-        rows, [("ID", "id"), ("AUTHOR", "author"), ("COMMENT", "comment")]
-    )
+    print_table(rows, [("ID", "id"), ("AUTHOR", "author"), ("COMMENT", "comment")])
 
 
 @comments_app.command("add")

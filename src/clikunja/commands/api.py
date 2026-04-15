@@ -37,7 +37,9 @@ def api_cmd(
     ),
     path: str | None = typer.Argument(None, metavar="[PATH]"),
     f: list[str] = typer.Option(
-        None, "-f", help="String field for JSON body (key=value). Repeatable.",
+        None,
+        "-f",
+        help="String field for JSON body (key=value). Repeatable.",
     ),
     F: list[str] = typer.Option(
         None,
@@ -81,7 +83,11 @@ def api_cmd(
 
             url = client._url(req_path)  # noqa: SLF001
             resp = httpx.request(
-                method, url, headers=client._headers(), timeout=client.timeout, **kwargs  # noqa: SLF001
+                method,
+                url,
+                headers=client._headers(),
+                timeout=client.timeout,
+                **kwargs,  # noqa: SLF001
             )
             if resp.status_code >= 400:
                 _die(f"API error {resp.status_code}: {resp.text[:500]}", 3)

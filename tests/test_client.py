@@ -54,6 +54,7 @@ def test_post_sends_json_body(httpx_mock):
     req = httpx_mock.get_requests()[0]
     assert req.method == "POST"
     import json as _json
+
     assert _json.loads(req.content) == {"title": "New"}
 
 

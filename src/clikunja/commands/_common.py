@@ -45,15 +45,9 @@ def print_table(rows: list[dict], columns: list[tuple[str, str]]) -> None:
         typer.echo("(no results)")
         return
     headers = [h for h, _ in columns]
-    values: list[list[str]] = [
-        [str(row.get(k, "") or "") for _, k in columns] for row in rows
-    ]
-    widths = [
-        max(len(headers[i]), *(len(v[i]) for v in values)) for i in range(len(headers))
-    ]
+    values: list[list[str]] = [[str(row.get(k, "") or "") for _, k in columns] for row in rows]
+    widths = [max(len(headers[i]), *(len(v[i]) for v in values)) for i in range(len(headers))]
     sep = "  "
     typer.echo(sep.join(h.ljust(w) for h, w in zip(headers, widths, strict=False)))
     for row in values:
-        typer.echo(
-            sep.join(c.ljust(w) for c, w in zip(row, widths, strict=False))
-        )
+        typer.echo(sep.join(c.ljust(w) for c, w in zip(row, widths, strict=False)))

@@ -4,9 +4,7 @@ import typer
 
 from clikunja.commands._common import call, print_json, print_table
 
-labels_app = typer.Typer(
-    name="labels", help="Manage Vikunja labels.", no_args_is_help=True
-)
+labels_app = typer.Typer(name="labels", help="Manage Vikunja labels.", no_args_is_help=True)
 
 
 @labels_app.command("list")

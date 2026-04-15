@@ -11,6 +11,7 @@ def _die(msg: str, code: int = 1) -> None:
     typer.echo(msg, err=True)
     raise typer.Exit(code)
 
+
 auth_app = typer.Typer(
     name="auth",
     help="Authentication: login, logout, status.",

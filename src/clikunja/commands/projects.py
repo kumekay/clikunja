@@ -4,9 +4,7 @@ import typer
 
 from clikunja.commands._common import call, print_json, print_table
 
-projects_app = typer.Typer(
-    name="projects", help="Manage Vikunja projects.", no_args_is_help=True
-)
+projects_app = typer.Typer(name="projects", help="Manage Vikunja projects.", no_args_is_help=True)
 
 
 @projects_app.command("list")

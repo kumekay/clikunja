@@ -36,9 +36,10 @@ def test_login_fails_on_401(httpx_mock):
         ["login", "--url", "https://todo.example.com", "--token", "tk_bad"],
     )
     assert result.exit_code != 0
-    assert "bad token" in (result.output + result.stderr).lower() or "unauthor" in (
-        result.output + result.stderr
-    ).lower()
+    assert (
+        "bad token" in (result.output + result.stderr).lower()
+        or "unauthor" in (result.output + result.stderr).lower()
+    )
     saved = config.load()
     assert saved.token is None
 
