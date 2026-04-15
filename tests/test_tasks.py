@@ -17,7 +17,7 @@ def _logged_in():
 def test_tasks_list_all(httpx_mock):
     _logged_in()
     httpx_mock.add_response(
-        url="https://todo.example.com/api/v1/tasks/all",
+        url="https://todo.example.com/api/v1/tasks",
         json=[{"id": 42, "title": "Buy milk", "done": False, "project_id": 1}],
     )
     result = runner.invoke(app, ["tasks", "list"])

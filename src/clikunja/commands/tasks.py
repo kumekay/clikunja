@@ -12,7 +12,7 @@ def list_tasks(
     project: int | None = typer.Option(None, "--project", help="Filter by project ID."),
     json_out: bool = typer.Option(False, "--json"),
 ) -> None:
-    path = f"/projects/{project}/tasks" if project is not None else "/tasks/all"
+    path = f"/projects/{project}/tasks" if project is not None else "/tasks"
     data = call("GET", path)
     if json_out:
         print_json(data)
