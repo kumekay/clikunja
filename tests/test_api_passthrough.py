@@ -86,6 +86,39 @@ def test_F_file_fields_read_from_disk(httpx_mock, tmp_path):
     assert json.loads(req.content) == {"comment": "# hello\n\nmulti-line\n"}
 
 
+def test_body_file_preserves_typed_json_fields(httpx_mock, tmp_path):
+    _logged_in()
+    body_file = tmp_path / "body.json"
+    body_file.write_text('{"label_id": 12, "done": true}')
+    httpx_mock.add_response(
+        url="https://todo.example.com/api/v1/tasks/147/labels",
+        json={"success": True},
+    )
+    result = runner.invoke(
+        app,
+        ["api", "PUT", "tasks/147/labels", "--body", f"@{body_file}"],
+    )
+    assert result.exit_code == 0, result.output
+    req = httpx_mock.get_requests()[0]
+    assert json.loads(req.content) == {"label_id": 12, "done": True}
+
+
+def test_body_stdin_preserves_typed_json_fields(httpx_mock):
+    _logged_in()
+    httpx_mock.add_response(
+        url="https://todo.example.com/api/v1/tasks/42",
+        json={"id": 42, "priority": 4, "done": False},
+    )
+    result = runner.invoke(
+        app,
+        ["api", "PATCH", "tasks/42", "--body", "-"],
+        input='{"priority": 4, "done": false}',
+    )
+    assert result.exit_code == 0, result.output
+    req = httpx_mock.get_requests()[0]
+    assert json.loads(req.content) == {"priority": 4, "done": False}
+
+
 def test_api_raw_passes_body_unparsed(httpx_mock):
     _logged_in()
     httpx_mock.add_response(

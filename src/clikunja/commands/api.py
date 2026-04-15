@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import sys
 from pathlib import Path
+from typing import Any
 
 import typer
 
@@ -31,6 +32,20 @@ def _read_file_value(value: str) -> str:
     return Path(value).read_text()
 
 
+def _read_json_body(value: str) -> Any:
+    if value == "-":
+        raw = sys.stdin.read()
+    elif value.startswith("@"):
+        raw = Path(value[1:]).read_text()
+    else:
+        _die(f"--body must be '-' or @path (got {value!r})", 1)
+
+    try:
+        return json.loads(raw)
+    except json.JSONDecodeError as e:
+        _die(f"Invalid JSON body: {e}", 1)
+
+
 def api_cmd(
     method_or_path: str = typer.Argument(
         ..., metavar="METHOD_OR_PATH", help="HTTP method (default GET) or path if no method given."
@@ -45,6 +60,11 @@ def api_cmd(
         None,
         "-F",
         help="File-valued field for JSON body (key=@path or key=@- for stdin). Repeatable.",
+    ),
+    body: str | None = typer.Option(
+        None,
+        "--body",
+        help="Raw JSON body from @path or - for stdin.",
     ),
     raw: bool = typer.Option(
         False, "--raw", help="Print response body verbatim instead of JSON-parsed."
@@ -62,20 +82,29 @@ def api_cmd(
     else:
         _die(f"Unknown HTTP method: {method_or_path!r}", 1)
 
-    body: dict[str, str] = {}
-    for item in f or []:
-        k, v = _parse_field(item)
-        body[k] = v
-    for item in F or []:
-        k, v = _parse_field(item)
-        if not v.startswith("@"):
-            _die(f"-F value must start with '@' (got {v!r})", 1)
-        body[k] = _read_file_value(v[1:])
+    if body is not None and (f or F):
+        _die("Cannot combine --body with -f/-F.", 1)
+
+    json_body: Any | None = None
+    if body is not None:
+        json_body = _read_json_body(body)
+    else:
+        json_body = {}
+        for item in f or []:
+            k, v = _parse_field(item)
+            json_body[k] = v
+        for item in F or []:
+            k, v = _parse_field(item)
+            if not v.startswith("@"):
+                _die(f"-F value must start with '@' (got {v!r})", 1)
+            json_body[k] = _read_file_value(v[1:])
 
     client = Client(cfg.url, cfg.token)
     kwargs: dict = {}
-    if body and method in {"POST", "PUT", "PATCH", "DELETE"}:
-        kwargs["json"] = body
+    if body is not None:
+        kwargs["json"] = json_body
+    elif json_body and method in {"POST", "PUT", "PATCH", "DELETE"}:
+        kwargs["json"] = json_body
 
     try:
         if raw:
