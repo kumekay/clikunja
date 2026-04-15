@@ -85,24 +85,24 @@ def api_cmd(
     if body is not None and (f or F):
         _die("Cannot combine --body with -f/-F.", 1)
 
-    json_body: Any | None = None
+    payload: Any | None = None
     if body is not None:
-        json_body = _read_json_body(body)
-    else:
-        json_body = {}
+        payload = _read_json_body(body)
+    elif f or F:
+        payload = {}
         for item in f or []:
             k, v = _parse_field(item)
-            json_body[k] = v
+            payload[k] = v
         for item in F or []:
             k, v = _parse_field(item)
             if not v.startswith("@"):
                 _die(f"-F value must start with '@' (got {v!r})", 1)
-            json_body[k] = _read_file_value(v[1:])
+            payload[k] = _read_file_value(v[1:])
 
     client = Client(cfg.url, cfg.token)
     kwargs: dict = {}
-    if body is not None or (json_body and method in {"POST", "PUT", "PATCH", "DELETE"}):
-        kwargs["json"] = json_body
+    if body is not None or (payload is not None and method in {"POST", "PUT", "PATCH", "DELETE"}):
+        kwargs["json"] = payload
 
     try:
         if raw:
