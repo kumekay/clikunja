@@ -34,7 +34,7 @@ src/clikunja/
 ├── errors.py          # CLIError, AuthError, APIError
 └── commands/
     ├── auth.py        # login, logout, status
-    ├── api.py         # gh-style raw passthrough
+    ├── api.py         # raw authenticated passthrough
     ├── projects.py
     ├── tasks.py
     ├── labels.py
@@ -76,7 +76,7 @@ tests/
 
 ## API passthrough
 
-`clikunja api <METHOD> <path>` mimics `gh api`:
+`clikunja api <METHOD> <path>` is a raw authenticated call against the Vikunja API:
 
 - `-f key=value` — string field (JSON body)
 - `-F key=@file` — file contents as field value (`@-` for stdin)

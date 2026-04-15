@@ -1,6 +1,6 @@
 # clikunja
 
-A CLI for [Vikunja](https://vikunja.io) inspired by `gh`. Configurable server URL, API-token auth, structured subcommands for projects/tasks/labels/comments, plus a `gh api`-style raw passthrough.
+A CLI for [Vikunja](https://vikunja.io). Configurable server URL, API-token auth, structured subcommands for projects/tasks/labels/comments, plus a raw API passthrough.
 
 ## Install
 

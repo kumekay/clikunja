@@ -14,14 +14,14 @@ from clikunja.errors import CLIError
 
 app = typer.Typer(
     name="clikunja",
-    help="CLI for Vikunja TODO (gh-inspired).",
+    help="CLI for Vikunja TODO.",
     no_args_is_help=True,
     add_completion=False,
 )
 
 app.command("login", help="Log in with an API token.")(login)
 app.add_typer(auth_app, name="auth")
-app.command("api", help="Raw Vikunja API passthrough (like `gh api`).")(api_cmd)
+app.command("api", help="Raw authenticated Vikunja API passthrough.")(api_cmd)
 app.add_typer(projects_app, name="projects")
 app.add_typer(tasks_app, name="tasks")
 app.add_typer(labels_app, name="labels")

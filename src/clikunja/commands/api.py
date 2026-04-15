@@ -48,7 +48,7 @@ def api_cmd(
         False, "--raw", help="Print response body verbatim instead of JSON-parsed."
     ),
 ) -> None:
-    """Raw authenticated passthrough to the Vikunja API (like `gh api`)."""
+    """Raw authenticated passthrough to the Vikunja API."""
     cfg = config.load()
     if not cfg.url or not cfg.token:
         _die("Not logged in. Run `clikunja login` first.", 2)

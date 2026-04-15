@@ -1,7 +1,7 @@
 [project]
 name = "clikunja"
 version = "0.1.0"
-description = "CLI for Vikunja TODO (gh-inspired)"
+description = "CLI for Vikunja TODO"
 readme = "README.md"
 requires-python = ">=3.11"
 license = { file = "LICENSE" }
