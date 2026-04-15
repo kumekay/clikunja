@@ -119,6 +119,33 @@ def test_body_stdin_preserves_typed_json_fields(httpx_mock):
     assert json.loads(req.content) == {"priority": 4, "done": False}
 
 
+def test_body_requires_stdin_or_at_path():
+    _logged_in()
+    result = runner.invoke(app, ["api", "PATCH", "tasks/42", "--body", "{}"])
+    assert result.exit_code == 1
+    assert "--body requires either '-' (stdin) or '@path' (file)" in result.output
+
+
+def test_body_rejects_invalid_json(tmp_path):
+    _logged_in()
+    body_file = tmp_path / "body.json"
+    body_file.write_text('{"priority": }')
+    result = runner.invoke(app, ["api", "PATCH", "tasks/42", "--body", f"@{body_file}"])
+    assert result.exit_code == 1
+    assert "Invalid JSON body:" in result.output
+
+
+def test_body_cannot_be_combined_with_f():
+    _logged_in()
+    result = runner.invoke(
+        app,
+        ["api", "PATCH", "tasks/42", "--body", "-", "-f", "done=true"],
+        input='{"done": false}',
+    )
+    assert result.exit_code == 1
+    assert "Cannot combine --body with -f/-F." in result.output
+
+
 def test_api_raw_passes_body_unparsed(httpx_mock):
     _logged_in()
     httpx_mock.add_response(
