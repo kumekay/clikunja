@@ -64,7 +64,7 @@ def api_cmd(
     body_source: str | None = typer.Option(
         None,
         "--body",
-        help="Raw JSON body from @path or - for stdin.",
+        help="Raw JSON body from @path or - for stdin. Cannot be combined with -f/-F.",
     ),
     raw: bool = typer.Option(
         False, "--raw", help="Print response body verbatim instead of JSON-parsed."
