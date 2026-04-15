@@ -101,9 +101,7 @@ def api_cmd(
 
     client = Client(cfg.url, cfg.token)
     kwargs: dict = {}
-    if body is not None:
-        kwargs["json"] = json_body
-    elif json_body and method in {"POST", "PUT", "PATCH", "DELETE"}:
+    if body is not None or (json_body and method in {"POST", "PUT", "PATCH", "DELETE"}):
         kwargs["json"] = json_body
 
     try:
