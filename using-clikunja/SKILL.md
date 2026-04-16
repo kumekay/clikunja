@@ -55,7 +55,7 @@ clikunja comments delete 9 --task 42
 clikunja api GET projects
 clikunja api GET /projects/3
 clikunja api PUT projects/3/tasks -f title="New" -f description="..."
-clikunja api POST tasks/42 -f done=true          # note: -f sends strings; use --json when types matter
+clikunja api POST tasks/42 --body @task-update.json
 clikunja api DELETE projects/3
 ```
 
@@ -77,7 +77,7 @@ clikunja comments add --task 42 "$(cat /tmp/comment.md)"
 clikunja api POST tasks/42 -F description=@/tmp/new-body.md
 ```
 
-`-f key=value` sends a string field in the JSON body. `-F key=@path` reads the file's contents as the field value (`@-` reads stdin).
+`-f key=value` sends a string field in the JSON body. `-F key=@path` reads the file's contents as the field value (`@-` reads stdin). For typed JSON (numbers, booleans, arrays, objects), use `--body @path` or `--body -` to read raw JSON from a file or stdin.
 
 ## URL Handling
 
@@ -125,5 +125,5 @@ If both are set via env, no `clikunja login` is required — scripts and CI can 
 - Do not pass the token as a positional arg or in shell history if avoidable — use `clikunja login` and paste at the prompt, or export `CLIKUNJA_TOKEN` in a shell-local scope.
 - `comments list` and `comments add` require `--task <id>`; comments are always scoped to a task.
 - `tasks done`/`undone` use `POST /tasks/{id}` with `{"done": true/false}` — do not attempt to `PUT` a full task object just to toggle completion.
-- For `api` passthrough, `-f` sends all values as strings. If the server needs a non-string (e.g. boolean, number), prefer a dedicated subcommand or wrap with `clikunja api ... --raw` plus a hand-crafted request only as a last resort.
+- For `api` passthrough, `-f` sends all values as strings. If the server needs a non-string (e.g. boolean, number), use `--body @path` or `--body -` instead.
 - Do not reach for `curl` or browser automation — `clikunja api` covers every Vikunja endpoint with auth already handled.

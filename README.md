@@ -47,6 +47,7 @@ clikunja comments add --task 42 "Looks good"
 # Raw API passthrough
 clikunja api GET projects
 clikunja api PUT projects/3/tasks -f title="From CLI"
+clikunja api PUT tasks/147/labels --body @body.json
 ```
 
 ## Agent skill
